@@ -23,5 +23,5 @@ private slots:
 
 private:
 	QWidget *lineNumberArea;
-	QFile *file;
+	QFile *file = nullptr;
 };

@@ -6,3 +6,5 @@ QtWidgetsApplication3/x64/Debug/rcc/qrc_QtWidgetsApplication3.cpp
 QtWidgetsApplication3/x64/Debug/uic/ui_QtWidgetsApplication3.h
 QtWidgetsApplication3/x64/Release/qmake/qtvars_x64_Release.props
 x64/Debug/*.*
+CustomCodeEditor - Shortcut.lnk
+.vs/QtWidgetsApplication3/v15/*

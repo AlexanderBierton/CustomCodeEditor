@@ -9,6 +9,7 @@ class FileTabWidget : public QTabWidget
 
 public:
 	FileTabWidget(QWidget *parent = nullptr);
+	QString getNewFileName();
 
 protected:
 	void tabInserted(int index) override;
