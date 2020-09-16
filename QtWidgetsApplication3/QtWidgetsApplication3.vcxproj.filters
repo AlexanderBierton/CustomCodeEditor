@@ -60,5 +60,8 @@
     <QtMoc Include="FileTabWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="NewFileAction.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>

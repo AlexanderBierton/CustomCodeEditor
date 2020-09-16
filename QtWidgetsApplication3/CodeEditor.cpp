@@ -35,6 +35,16 @@ CodeEditor::CodeEditor(QFile *workingFile, QWidget *parent) : QPlainTextEdit(par
 	}
 }
 
+QString CodeEditor::getFilePath()
+{
+	if (this->hasFile())
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
 int CodeEditor::lineNumberAreaWidth()
 {
 	int digits = 1;
@@ -51,7 +61,15 @@ int CodeEditor::lineNumberAreaWidth()
 
 bool CodeEditor::hasFile()
 {
-	return file != nullptr && file->exists();
+	try
+	{
+		bool test = file != NULL && file->fileName().size() > 0 && file->exists();
+		return test;
+	}
+	catch(...)
+	{
+		return false;
+	}
 }
 
 void CodeEditor::updateLineNumberAreaWidth(int /* newBlockCount */)

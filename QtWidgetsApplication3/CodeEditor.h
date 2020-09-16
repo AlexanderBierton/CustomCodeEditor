@@ -12,6 +12,7 @@ public:
 	void lineNumberAreaPaintEvent(QPaintEvent *event);
 	int lineNumberAreaWidth();
 	bool hasFile();
+	QString getFilePath();
 
 protected:
 	void resizeEvent(QResizeEvent *event) override;

@@ -95,6 +95,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="NewFileAction.h" />
     <QtMoc Include="CodeEditor.h" />
     <QtMoc Include="FileTabWidget.h" />
     <ClInclude Include="LineNumberArea.h" />

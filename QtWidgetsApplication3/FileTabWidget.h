@@ -10,6 +10,7 @@ class FileTabWidget : public QTabWidget
 public:
 	FileTabWidget(QWidget *parent = nullptr);
 	QString getNewFileName();
+	bool hasFileOpen(QFile* file);
 
 protected:
 	void tabInserted(int index) override;

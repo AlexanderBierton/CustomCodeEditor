@@ -9,6 +9,11 @@ class QtWidgetsApplication3 : public QMainWindow
 
 public:
     QtWidgetsApplication3(QWidget *parent = Q_NULLPTR);
+	
+
+public slots:
+	void newFile();
+	void addFile();
 
 private:
     Ui::QtWidgetsApplication3Class ui;

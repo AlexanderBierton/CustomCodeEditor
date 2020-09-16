@@ -28,3 +28,17 @@ QString FileTabWidget::getNewFileName()
 	return fileName;
 
 }
+
+bool FileTabWidget::hasFileOpen(QFile* file)
+{
+	int currentIndex = 0;
+	int numOfTabs = this->count();
+
+	while (currentIndex < numOfTabs)
+	{
+		CodeEditor* tab((CodeEditor*)this->widget(currentIndex));
+
+	}
+
+	return false;
+}
