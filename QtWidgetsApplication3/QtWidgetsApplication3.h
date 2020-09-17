@@ -14,6 +14,7 @@ public:
 public slots:
 	void newFile();
 	void addFile();
+	void closeTab(int index);
 
 private:
     Ui::QtWidgetsApplication3Class ui;

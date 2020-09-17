@@ -8,6 +8,7 @@ QtWidgetsApplication3::QtWidgetsApplication3(QWidget *parent)
 
 	connect(ui.actionNew, SIGNAL(triggered()), this, SLOT(newFile()));
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(addFile()));
+	connect(ui.fileTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
 	ui.fileTabs->addTab(new CodeEditor, ui.fileTabs->getNewFileName());
 }
@@ -22,13 +23,26 @@ void QtWidgetsApplication3::newFile()
 void QtWidgetsApplication3::addFile()
 {
 	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, tr("Select file(s)"), QUrl("C:\\"));
-	int lastInsertedIndex = 0;
+	int lastInsertedIndex = ui.fileTabs->currentIndex();
 
 	for each (QUrl url in urls)
 	{
 		QFile* newFile = new QFile(url.toLocalFile());
-		lastInsertedIndex = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor(newFile), url.fileName());
+		if (!ui.fileTabs->hasFileOpen(newFile))
+			lastInsertedIndex = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor(newFile), url.fileName());
 	}
 
 	ui.fileTabs->setCurrentIndex(lastInsertedIndex);
+}
+
+void QtWidgetsApplication3::closeTab(int index)
+{
+	qDebug() << index;
+
+	CodeEditor* selTab = (CodeEditor*)ui.fileTabs->widget(index);
+	ui.fileTabs->removeNewFile(selTab);
+	ui.fileTabs->removeTab(index);
+	
+	if (ui.fileTabs->count() == 0)
+		newFile();
 }

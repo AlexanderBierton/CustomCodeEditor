@@ -1,6 +1,7 @@
 #include "CodeEditor.h"
 #include "LineNumberArea.h"
 #include "qpainter.h"
+#include "qfileinfo.h"
 #include <QtWidgets>
 
 CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
@@ -39,10 +40,11 @@ QString CodeEditor::getFilePath()
 {
 	if (this->hasFile())
 	{
-		return true;
+		QFileInfo fileInfo(*file);
+		return fileInfo.absoluteFilePath();
 	}
 	else
-		return false;
+		return NULL;
 }
 
 int CodeEditor::lineNumberAreaWidth()
