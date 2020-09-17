@@ -12,6 +12,21 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 	connect(this, &CodeEditor::updateRequest, this, &CodeEditor::updateLineNumberArea);
 	connect(this, &CodeEditor::cursorPositionChanged, this, &CodeEditor::highlightCurrentLine);
 
+	QFont* font = new QFont;
+	font->setFamily("Roboto Mono Medium");
+	font->setStyleHint(QFont::Monospace);
+	font->setFixedPitch(true);
+	font->setPointSize(10);
+
+	this->setFont(*font);
+
+	const int tabStop = 4;  // 4 characters
+
+	QFontMetrics metrics(*font);
+	this->setTabStopWidth(tabStop * metrics.width(' '));
+	delete font;
+
+	CoCreateGuid(&guid);
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
 }
@@ -23,6 +38,20 @@ CodeEditor::CodeEditor(QFile *workingFile, QWidget *parent) : QPlainTextEdit(par
 	connect(this, &CodeEditor::blockCountChanged, this, &CodeEditor::updateLineNumberAreaWidth);
 	connect(this, &CodeEditor::updateRequest, this, &CodeEditor::updateLineNumberArea);
 	connect(this, &CodeEditor::cursorPositionChanged, this, &CodeEditor::highlightCurrentLine);
+
+	QFont* font = new QFont;
+	font->setFamily("Roboto Mono Medium");
+	font->setStyleHint(QFont::Monospace);
+	font->setFixedPitch(true);
+	font->setPointSize(10);
+
+	this->setFont(*font);
+
+	const int tabStop = 4;  // 4 characters
+
+	QFontMetrics metrics(*font);
+	this->setTabStopWidth(tabStop * metrics.width(' '));
+	delete font;
 
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
@@ -140,4 +169,57 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 		bottom = top + qRound(blockBoundingRect(block).height());
 		++blockNumber;
 	}
+}
+
+void CodeEditor::setNewFileName(QString fileName)
+{
+	if (!fileName.isNull())
+		this->newFileName = fileName;
+}
+
+QString CodeEditor::getNewFileName()
+{
+	return this->newFileName;
+}
+
+void CodeEditor::keyPressEvent(QKeyEvent *event)
+{
+	if (event->modifiers() == Qt::ControlModifier)
+	{
+		switch (event->key())
+		{
+			case Qt::Key_S:
+				saveFile();
+				break;
+		}
+	}
+	else
+	{
+		QPlainTextEdit::keyPressEvent(event);
+	}
+}
+
+void CodeEditor::saveFile()
+{
+	if (!hasFile())
+	{
+		QUrl saveNewUrl = QFileDialog::getSaveFileUrl(this, "Save new file...", QUrl(), tr("Text Files (*.txt)"));
+
+		QFile* newFile = new QFile(saveNewUrl.toLocalFile());
+		
+		if (newFile->open(QIODevice::WriteOnly))
+		{
+			QTextStream stream(newFile);
+			stream << this->toPlainText();
+			newFile->close();
+			file = newFile;
+
+			this->editorSaved(guid, true);
+		}
+	}
+}
+
+GUID CodeEditor::getGUID()
+{
+	return this->guid;
 }

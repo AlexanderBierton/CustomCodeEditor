@@ -16,7 +16,7 @@ QtWidgetsApplication3::QtWidgetsApplication3(QWidget *parent)
 
 void QtWidgetsApplication3::newFile()
 {
-	int newTab = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor, ui.fileTabs->getNewFileName());
+	int newTab = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor(ui.fileTabs), ui.fileTabs->getNewFileName());
 	ui.fileTabs->setCurrentIndex(newTab);
 }
 
@@ -29,7 +29,7 @@ void QtWidgetsApplication3::addFile()
 	{
 		QFile* newFile = new QFile(url.toLocalFile());
 		if (!ui.fileTabs->hasFileOpen(newFile))
-			lastInsertedIndex = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor(newFile), url.fileName());
+			lastInsertedIndex = ui.fileTabs->insertTab(ui.fileTabs->currentIndex() + 1, new CodeEditor(newFile, ui.fileTabs), url.fileName());
 	}
 
 	ui.fileTabs->setCurrentIndex(lastInsertedIndex);

@@ -1,4 +1,6 @@
 #pragma once
+#ifndef FILE_TAB_WIDGET
+#define FILE_TAB_WIDGET
 #include <QtWidgets>
 #include "qtabwidget.h"
 #include "CodeEditor.h"
@@ -16,6 +18,11 @@ public:
 protected:
 	void tabInserted(int index) override;
 
+private slots:
+	void onTabSave(GUID guid, bool isNew);
+
 private:
 	std::vector<QWidget*> newFileWidgets;
 };
+
+#endif

@@ -10,23 +10,35 @@ FileTabWidget::FileTabWidget(QWidget *parent) : QTabWidget(parent)
 void FileTabWidget::tabInserted(int index)
 {
 	QTabWidget::tabInserted(index);
-
 	CodeEditor* tab((CodeEditor*)this->widget(index));
+	
+	GUID newGuid;
+	CoCreateGuid(&newGuid);
+	//tab->setGUID(newGuid);
 
 	if (!tab->hasFile())
 	{
+		tab->setNewFileName(this->tabText(index));
 		newFileWidgets.push_back(tab);
 	}
+
+	connect(tab, SIGNAL(editorSaved(GUID, bool)), this, SLOT(onTabSave(GUID, bool)));
 }
 
 QString FileTabWidget::getNewFileName()
 {
 	QString fileName = "New File ";
-
-	fileName += QString::number(((int)this->newFileWidgets.size()) + 1);
+	
+	if (newFileWidgets.size() > 0)
+	{
+		std::string lastNewFileName = ((CodeEditor*)this->newFileWidgets.back())->getNewFileName().toStdString();
+		int num = lastNewFileName[lastNewFileName.length() - 1] + 1;
+		fileName += num;
+	}
+	else
+		fileName += '1';
 	
 	return fileName;
-
 }
 
 bool FileTabWidget::hasFileOpen(QFile* file)
@@ -67,4 +79,22 @@ void FileTabWidget::removeNewFile(CodeEditor* widget)
 
 	if (idx > -1)
 		newFileWidgets.erase(newFileWidgets.begin() + (idx));
+}
+
+void FileTabWidget::onTabSave(GUID guid, bool isNew)
+{
+	if (isNew)
+	{
+		int num = this->count();
+		for (int i = 0; i < this->count(); i++)
+		{
+			CodeEditor* tab = (CodeEditor*)this->widget(i);
+			if (tab->getGUID() == guid)
+			{
+				QFileInfo fileInfo(tab->getFilePath());
+
+				this->setTabText(i, fileInfo.fileName());
+			}
+		}
+	}
 }
