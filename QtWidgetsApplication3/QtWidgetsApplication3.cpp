@@ -10,7 +10,7 @@ QtWidgetsApplication3::QtWidgetsApplication3(QWidget *parent)
 	connect(ui.actionOpen, SIGNAL(triggered()), this, SLOT(addFile()));
 	connect(ui.fileTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 
-	ui.fileTabs->addTab(new CodeEditor, ui.fileTabs->getNewFileName());
+	ui.fileTabs->insertTab(0,new CodeEditor, ui.fileTabs->getNewFileName());
 }
 
 

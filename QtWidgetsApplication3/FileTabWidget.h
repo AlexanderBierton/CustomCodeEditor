@@ -20,6 +20,7 @@ protected:
 
 private slots:
 	void onTabSave(GUID guid, bool isNew);
+	void onNewTabRequest();
 
 private:
 	std::vector<QWidget*> newFileWidgets;

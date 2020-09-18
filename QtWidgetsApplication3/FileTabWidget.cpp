@@ -4,7 +4,7 @@
 
 FileTabWidget::FileTabWidget(QWidget *parent) : QTabWidget(parent)
 {
-
+	
 }
 
 void FileTabWidget::tabInserted(int index)
@@ -23,6 +23,7 @@ void FileTabWidget::tabInserted(int index)
 	}
 
 	connect(tab, SIGNAL(editorSaved(GUID, bool)), this, SLOT(onTabSave(GUID, bool)));
+	connect(tab, SIGNAL(newEditorRequest()), this, SLOT(onNewTabRequest()));
 }
 
 QString FileTabWidget::getNewFileName()
@@ -97,4 +98,10 @@ void FileTabWidget::onTabSave(GUID guid, bool isNew)
 			}
 		}
 	}
+}
+
+void FileTabWidget::onNewTabRequest()
+{
+	int newTab = this->addTab(new CodeEditor(), this->getNewFileName());
+	this->setCurrentIndex(newTab);
 }

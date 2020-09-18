@@ -29,6 +29,7 @@ private slots:
 
 signals:
 	void editorSaved(GUID guid, bool isNew);
+	void newEditorRequest();
 	
 private:
 	QWidget *lineNumberArea;

@@ -12,19 +12,19 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 	connect(this, &CodeEditor::updateRequest, this, &CodeEditor::updateLineNumberArea);
 	connect(this, &CodeEditor::cursorPositionChanged, this, &CodeEditor::highlightCurrentLine);
 
-	QFont* font = new QFont;
-	font->setFamily("Roboto Mono Medium");
-	font->setStyleHint(QFont::Monospace);
-	font->setFixedPitch(true);
-	font->setPointSize(10);
+	QFont font;
+	font.setFamily("Roboto Mono Medium");
+	font.setStyleHint(QFont::Monospace);
+	font.setFixedPitch(true);
+	font.setPointSize(10);
 
-	this->setFont(*font);
+	this->setFont(font);
+	lineNumberArea->setFont(font);
 
 	const int tabStop = 4;  // 4 characters
 
-	QFontMetrics metrics(*font);
+	QFontMetrics metrics(font);
 	this->setTabStopWidth(tabStop * metrics.width(' '));
-	delete font;
 
 	CoCreateGuid(&guid);
 	updateLineNumberAreaWidth(0);
@@ -34,28 +34,30 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 CodeEditor::CodeEditor(QFile *workingFile, QWidget *parent) : QPlainTextEdit(parent)
 {
 	lineNumberArea = new LineNumberArea(this);
-	file = workingFile;
+	
 	connect(this, &CodeEditor::blockCountChanged, this, &CodeEditor::updateLineNumberAreaWidth);
 	connect(this, &CodeEditor::updateRequest, this, &CodeEditor::updateLineNumberArea);
 	connect(this, &CodeEditor::cursorPositionChanged, this, &CodeEditor::highlightCurrentLine);
 
-	QFont* font = new QFont;
-	font->setFamily("Roboto Mono Medium");
-	font->setStyleHint(QFont::Monospace);
-	font->setFixedPitch(true);
-	font->setPointSize(10);
+	QFont font;
+	font.setFamily("Roboto Mono Medium");
+	font.setStyleHint(QFont::Monospace);
+	font.setFixedPitch(true);
+	font.setPointSize(10);
 
-	this->setFont(*font);
+	this->setFont(font);
+	lineNumberArea->setFont(font);
 
 	const int tabStop = 4;  // 4 characters
 
-	QFontMetrics metrics(*font);
+	QFontMetrics metrics(font);
 	this->setTabStopWidth(tabStop * metrics.width(' '));
-	delete font;
 
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
 
+
+	file = workingFile;
 	if (!file->open(QIODevice::ReadOnly))
 		return;
 
@@ -63,6 +65,8 @@ CodeEditor::CodeEditor(QFile *workingFile, QWidget *parent) : QPlainTextEdit(par
 		QString line = file->readLine();
 		this->insertPlainText(line);
 	}
+
+	file->close();
 }
 
 QString CodeEditor::getFilePath()
@@ -149,7 +153,7 @@ void CodeEditor::highlightCurrentLine()
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 	QPainter painter(lineNumberArea);
-	painter.fillRect(event->rect(), Qt::lightGray);
+	painter.fillRect(event->rect(), Qt::darkGray);
 
 	QTextBlock block = firstVisibleBlock();
 	int blockNumber = block.blockNumber();
@@ -159,7 +163,7 @@ void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 	while (block.isValid() && top <= event->rect().bottom()) {
 		if (block.isVisible() && bottom >= event->rect().top()) {
 			QString number = QString::number(blockNumber + 1);
-			painter.setPen(Qt::black);
+			painter.setPen(Qt::white);
 			painter.drawText(0, top, lineNumberArea->width(), fontMetrics().height(),
 				Qt::AlignRight, number);
 		}
@@ -191,6 +195,12 @@ void CodeEditor::keyPressEvent(QKeyEvent *event)
 			case Qt::Key_S:
 				saveFile();
 				break;
+			case Qt::Key_N:
+				this->newEditorRequest();
+				break;
+			default:
+				QPlainTextEdit::keyPressEvent(event);
+				break;
 		}
 	}
 	else
@@ -215,6 +225,22 @@ void CodeEditor::saveFile()
 			file = newFile;
 
 			this->editorSaved(guid, true);
+		}
+	}
+	else
+	{
+		if (file->open(QIODevice::WriteOnly))
+		{
+			QTextStream stream(file);
+			stream << this->toPlainText();
+			file->close();
+
+			this->editorSaved(guid, false);
+		}
+		else
+		{
+			QErrorMessage error(this);
+			error.showMessage("Unable to save to file at this time");
 		}
 	}
 }
