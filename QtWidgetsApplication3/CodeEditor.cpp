@@ -26,6 +26,8 @@ CodeEditor::CodeEditor(QWidget *parent) : QPlainTextEdit(parent)
 	QFontMetrics metrics(font);
 	this->setTabStopWidth(tabStop * metrics.width(' '));
 
+	this->setStyleSheet("background-color: #51719b; color: #FFF;");
+
 	CoCreateGuid(&guid);
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
@@ -53,20 +55,26 @@ CodeEditor::CodeEditor(QFile *workingFile, QWidget *parent) : QPlainTextEdit(par
 	QFontMetrics metrics(font);
 	this->setTabStopWidth(tabStop * metrics.width(' '));
 
+	this->setStyleSheet("background-color: #51719b; color: #FFF;");
+
 	updateLineNumberAreaWidth(0);
 	highlightCurrentLine();
-
 
 	file = workingFile;
 	if (!file->open(QIODevice::ReadOnly))
 		return;
 
+	QString plainText;
+
 	while (!file->atEnd()) {
-		QString line = file->readLine();
-		this->insertPlainText(line);
+		plainText += file->readLine();
 	}
 
+	this->insertPlainText(plainText);
+
 	file->close();
+	this->document()->setModified(false);
+	this->document()->clearUndoRedoStacks();
 }
 
 QString CodeEditor::getFilePath()
@@ -138,7 +146,7 @@ void CodeEditor::highlightCurrentLine()
 	if (!isReadOnly()) {
 		QTextEdit::ExtraSelection selection;
 
-		QColor lineColor = QColor(Qt::yellow).lighter(160);
+		QColor lineColor = QColor(81, 113, 155).lighter(160);
 
 		selection.format.setBackground(lineColor);
 		selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -153,7 +161,7 @@ void CodeEditor::highlightCurrentLine()
 void CodeEditor::lineNumberAreaPaintEvent(QPaintEvent *event)
 {
 	QPainter painter(lineNumberArea);
-	painter.fillRect(event->rect(), Qt::darkGray);
+	painter.fillRect(event->rect(), QColor(106,144,193));
 
 	QTextBlock block = firstVisibleBlock();
 	int blockNumber = block.blockNumber();
@@ -223,8 +231,14 @@ void CodeEditor::saveFile()
 			stream << this->toPlainText();
 			newFile->close();
 			file = newFile;
+			this->document()->setModified(false);
 
 			this->editorSaved(guid, true);
+		}
+		else
+		{
+			QErrorMessage error(this);
+			error.showMessage("Unable to save to new file");
 		}
 	}
 	else
@@ -234,7 +248,7 @@ void CodeEditor::saveFile()
 			QTextStream stream(file);
 			stream << this->toPlainText();
 			file->close();
-
+			this->document()->setModified(false);
 			this->editorSaved(guid, false);
 		}
 		else

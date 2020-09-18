@@ -4,6 +4,7 @@
 #include <QtWidgets>
 #include "qtabwidget.h"
 #include "CodeEditor.h"
+#include "FileTabBar.h"
 
 class FileTabWidget : public QTabWidget
 {
@@ -21,6 +22,8 @@ protected:
 private slots:
 	void onTabSave(GUID guid, bool isNew);
 	void onNewTabRequest();
+	void onTabClose(int index);
+	void onDocumentModified(bool changed);
 
 private:
 	std::vector<QWidget*> newFileWidgets;

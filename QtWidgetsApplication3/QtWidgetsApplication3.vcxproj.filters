@@ -47,6 +47,9 @@
     <ClCompile Include="FileTabWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileTabBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LineNumberArea.h">
@@ -61,6 +64,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="NewFileAction.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="FileTabBar.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

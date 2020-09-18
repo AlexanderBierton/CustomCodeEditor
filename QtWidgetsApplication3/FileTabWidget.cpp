@@ -4,7 +4,9 @@
 
 FileTabWidget::FileTabWidget(QWidget *parent) : QTabWidget(parent)
 {
-	
+	this->setTabBar(new FileTabBar());
+
+	connect(this->tabBar(), SIGNAL(tabCloseRequested(int)), this, SLOT(onTabClose(int)));
 }
 
 void FileTabWidget::tabInserted(int index)
@@ -14,7 +16,6 @@ void FileTabWidget::tabInserted(int index)
 	
 	GUID newGuid;
 	CoCreateGuid(&newGuid);
-	//tab->setGUID(newGuid);
 
 	if (!tab->hasFile())
 	{
@@ -24,6 +25,9 @@ void FileTabWidget::tabInserted(int index)
 
 	connect(tab, SIGNAL(editorSaved(GUID, bool)), this, SLOT(onTabSave(GUID, bool)));
 	connect(tab, SIGNAL(newEditorRequest()), this, SLOT(onNewTabRequest()));
+	connect(tab, SIGNAL(modificationChanged(bool)), this, SLOT(onDocumentModified(bool)));
+
+	
 }
 
 QString FileTabWidget::getNewFileName()
@@ -104,4 +108,36 @@ void FileTabWidget::onNewTabRequest()
 {
 	int newTab = this->addTab(new CodeEditor(), this->getNewFileName());
 	this->setCurrentIndex(newTab);
+}
+
+void FileTabWidget::onTabClose(int index)
+{
+	CodeEditor* editor = (CodeEditor*)this->widget(index);
+
+	
+	this->removeTab(index);
+	this->removeNewFile(editor);
+}
+
+void FileTabWidget::onDocumentModified(bool changed)
+{
+	// At the moment you can only have one tab open at a time 
+	// this is a temporary thing as of now
+	int selectedIdx = this->currentIndex();
+	CodeEditor* selectedTab = (CodeEditor*)this->widget(selectedIdx);
+
+	if (selectedTab->hasFile())
+	{
+		QString title = this->tabText(selectedIdx);
+
+		if (changed)
+			title = title += " *";
+		else
+			title = title.left(title.length() - 2);
+
+		this->setTabText(selectedIdx, title);
+
+	}
+	
+	
 }

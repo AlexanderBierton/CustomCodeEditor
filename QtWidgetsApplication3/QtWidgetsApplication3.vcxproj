@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileTabBar.cpp" />
     <ClCompile Include="FileTabWidget.cpp" />
     <QtRcc Include="QtWidgetsApplication3.qrc" />
     <QtUic Include="QtWidgetsApplication3.ui" />
@@ -98,6 +99,7 @@
     <QtMoc Include="NewFileAction.h" />
     <QtMoc Include="CodeEditor.h" />
     <QtMoc Include="FileTabWidget.h" />
+    <QtMoc Include="FileTabBar.h" />
     <ClInclude Include="LineNumberArea.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -37,12 +37,7 @@ void QtWidgetsApplication3::addFile()
 
 void QtWidgetsApplication3::closeTab(int index)
 {
-	qDebug() << index;
-
-	CodeEditor* selTab = (CodeEditor*)ui.fileTabs->widget(index);
-	ui.fileTabs->removeNewFile(selTab);
-	ui.fileTabs->removeTab(index);
-	
+	// Check to see if no tabs are available and if not then create a new one
 	if (ui.fileTabs->count() == 0)
 		newFile();
 }
